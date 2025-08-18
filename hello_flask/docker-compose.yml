@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  web:
+    image: flaskapp:latest
+    ports:
+      - "5002:5002"
+    depends_on:
+      - mydb
+
+  mydb:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
