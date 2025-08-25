@@ -137,4 +137,4 @@ For recruiters & hiring managers: this is not just code — it’s a **showcase 
 ---
 
 👤 **Author:** Yassin Suleiman
-📍 Switzerland | DevOps-focused System Engineer | HF Informatik Student
+📍 Switzerland | DevOps Engineer
