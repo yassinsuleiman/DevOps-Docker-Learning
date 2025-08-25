@@ -115,13 +115,13 @@ Visit:
 
 This project was more than just writing YAML and Python — it was about solving **real-world DevOps problems**:
 
-* 🐳 **Docker fundamentals**: building custom images, using official ones
-* 📦 **Orchestration with Compose**: linking containers via service names (DNS)
-* 💾 **Persistence**: volumes to survive container restarts
-* 🔑 **Config management**: moving from hardcoded values → environment variables
-* ⚖️ **Scaling & load balancing**: why we need NGINX in front of multiple replicas
-* 🛠 **Debugging**: fixed YAML indentation errors, Docker daemon issues, wrong filenames (`app.py` vs `count.py`), Redis not persisting
-* 💡 **Production mindset**: thinking beyond “it works on my machine” → resilience & flexibility
+* **Docker fundamentals**: building custom images, using official ones
+* **Orchestration with Compose**: linking containers via service names (DNS)
+* **Persistence**: volumes to survive container restarts
+* **Config management**: moving from hardcoded values → environment variables
+* **Scaling & load balancing**: why we need NGINX in front of multiple replicas
+* **Debugging**: fixed YAML indentation errors, Docker daemon issues, wrong filenames (`app.py` vs `count.py`), Redis not persisting
+* **Production mindset**: thinking beyond “it works on my machine” → resilience & flexibility
 
 ---
 
@@ -154,4 +154,4 @@ For recruiters & hiring managers: this is not just code — it’s a **showcase 
 ---
 
 👤 **Author:** Yassin Suleiman  
-📍 Switzerland | DevOps-focused System Engineer | HF Informatik Student
+📍 Switzerland | DevOps Engineer
