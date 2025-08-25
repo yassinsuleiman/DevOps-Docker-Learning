@@ -46,7 +46,7 @@ flowchart LR
 
 * Create a multi-container application using **Flask** + **Redis**
 * Flask has two routes:
-  * `/` → Welcome message
+  * `/` → Landing Page
   * `/count` → Increments and displays a visit count stored in Redis
 * Dockerize both services and orchestrate them with Docker Compose
 
