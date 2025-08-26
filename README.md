@@ -1,4 +1,4 @@
-# 🐳 DevOps Learning – Docker Module (CoderCo Academy)
+# 🐳 DevOps Learning – Docker
 
 This repository captures my **deep-dive into Docker and containerization** through the CoderCo DevOps Academy. Rather than just listing concepts, this README explains the *why* and the *how* behind each lesson — turning dry technical topics into real-world skills I can apply in DevOps workflows.
 
