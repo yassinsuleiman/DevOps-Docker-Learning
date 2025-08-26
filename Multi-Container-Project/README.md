@@ -83,7 +83,7 @@ Visit:
 
 * [http://localhost:5002/](http://localhost:5002/) → Welcome page
 * [http://localhost:5002/count](http://localhost:5002/count) → Counter page
-
+* [http://localhost:5002/analytics](http://localhost:5002/analytics) → Analytics dashboard
 ---
 
 ## 🚀 Features Implemented
