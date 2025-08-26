@@ -1,6 +1,15 @@
-# 🐳 DevOps Learning – Docker
+# 🐳 DevOps Learning – Docker Module (CoderCo Academy)
 
-This repository captures my **deep-dive into Docker and containerization** through the CoderCo DevOps Academy. Rather than just listing concepts, this README explains the *why* and the *how* behind each lesson — turning dry technical topics into real-world skills I can apply in DevOps workflows.
+# 🚀 **Featured Project: Multi-Container Architecture**
+👉 [**Flask + Redis + NGINX — Multi-Container Project**](https://github.com/yassinsuleiman/DevOps-Docker-Learning/tree/main/Multi-Container-Project)
+
+<p align="center">
+  <a href="https://github.com/yassinsuleiman/DevOps-Docker-Learning/tree/main/Multi-Container-Project">
+    <img src="https://img.shields.io/badge/Explore%20the%20Project-%F0%9F%9A%80-blue?style=for-the-badge" alt="Project Link"/>
+  </a>
+</p>
+
+> 🔥 This is the **capstone project** of the Docker Module: a **production-style system** built with Flask, Redis, and NGINX — fully containerized and orchestrated with Docker Compose. It demonstrates **persistence, configuration management, scaling, and load balancing** in action. This is the project you want to see. 👆
 
 ---
 
@@ -109,4 +118,4 @@ For recruiters and hiring managers: this is not coursework — it’s **proof of
 ---
 
 👤 **Author:** Yassin Suleiman  
-📍 Switzerland | DevOps Engineer
+📍 Switzerland | DevOps-focused System Engineer | HF Informatik Student
