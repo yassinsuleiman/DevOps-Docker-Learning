@@ -1,4 +1,4 @@
-# 🐳 Docker Multi-Container Challenge — Flask + Redis + NGINX
+# 🐳 SiteScope — A Containerized Flask + Redis + NGINX Analytics Dashboard
 
 This project is the outcome of the **CoderCo Containers Challenge** — where I built, debugged, and scaled a **multi-container application** from scratch. It may look like a simple counter app, but under the hood it demonstrates many **core DevOps concepts**: containerization, persistence, configuration management, scaling, and load balancing.
 
@@ -9,7 +9,6 @@ This README is written to **showcase my work to recruiters and hiring managers**
 ## 🖼️ Demo — Application in Action
 
 ![A52E3280-6805-49BC-A392-BF7DEDF4F1BF-2](https://github.com/user-attachments/assets/9aeb141e-81ba-490d-b680-0df6456fb02c)
-
 
 > 🔎 Above: The Flask app running inside Docker containers — the **welcome** route (`/`) and the **counter** route (`/count`) incrementing via **Redis**.
 
@@ -23,8 +22,10 @@ flowchart LR
     subgraph Docker_Network
       NGINX -->|proxy_pass| WEB1[Flask App #1]
       NGINX -->|proxy_pass| WEB2[Flask App #2]
+      NGINX -->|proxy_pass| WEB3[Flask App #3]
       WEB1 -->|TCP 6379| REDIS[(Redis)]
       WEB2 -->|TCP 6379| REDIS
+      WEB3 -->|TCP 6379| REDIS
     end
 
     classDef proxy fill:#1f77b4,stroke:#0b3d6b,color:#fff
@@ -32,11 +33,11 @@ flowchart LR
     classDef store fill:#ff7f0e,stroke:#a04e00,color:#fff
 
     class NGINX proxy
-    class WEB1,WEB2 app
+    class WEB1,WEB2,WEB3 app
     class REDIS store
 ```
 
-> NGINX listens on **localhost:5002**, load-balances to multiple **Flask** replicas (exposed on the Docker network), and each app instance reads/writes the counter in **Redis**.
+> NGINX listens on **localhost:5002**, load-balances to **three Flask replicas** (exposed on the Docker network), and each app instance reads/writes the counter in **Redis**.
 
 ---
 
@@ -71,8 +72,8 @@ flowchart LR
 
 ```bash
 # clone repository
-git clone https://github.com/<your-username>/<repo-name>.git
-cd <repo-name>
+git clone https://github.com/yassinsuleiman/DevOps-Docker-Learning.git
+cd DevOps-Docker-Learning/Multi-Container-Project
 
 # build & start
 docker compose up --build
@@ -105,7 +106,7 @@ Visit:
 * Configurable in `docker-compose.yml`
 
 ### 5. Scaling with NGINX
-* Scaled Flask to multiple instances
+* Scaled Flask to **three instances**
 * NGINX reverse proxy load balances traffic
 * Solves port conflicts & enables high availability
 
@@ -149,7 +150,7 @@ It shows I can:
 * Apply DevOps best practices (persistence, scalability, configuration)
 * Document & communicate technical projects clearly
 
-For recruiters & hiring managers: this is not just code — it’s a **showcase of my ability to learn, apply, and ship real DevOps projects**.
+this is not just code — it’s a **showcase of my ability to learn, apply, and ship real DevOps projects**.
 
 ---
 
