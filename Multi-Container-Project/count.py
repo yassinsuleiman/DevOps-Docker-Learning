@@ -98,12 +98,6 @@ def api_incr():
     count_after, doc = create_visit(ip, ua)
     return jsonify({"ok": True, "count": count_after, "visit": doc})
 
-# --- Legacy plain-text route (kept) ---
-@app.route("/count")
-def count_legacy():
-    n, _ = create_visit(request.remote_addr or "unknown", request.headers.get("User-Agent", "unknown"))
-    return f"This page has been viewed {n} times."
-
 # --- THEME + UI (Dark/Light toggle, “Vue-like” cards & CTA) ---
 BASE_CSS = """
 <style>
@@ -154,12 +148,13 @@ BASE_CSS = """
 
   html,body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
   body{background:var(--bg); color:var(--text);}
+  a{text-decoration:none}
 
   .container{max-width:1200px;margin:0 auto;padding:24px;}
   .hdr{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}
   .brand{font-weight:800;font-size:28px;background:linear-gradient(90deg,#60a5fa, #a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
   .nav{display:flex;gap:8px}
-  .pill{padding:10px 14px;border-radius:12px;border:var(--border) solid var(--card-ring);color:var(--text);text-decoration:none}
+  .pill{padding:10px 14px;border-radius:12px;border:var(--border) solid var(--card-ring);color:var(--text)}
 
   .grid{display:grid;grid-template-columns:1fr;gap:20px}
   @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
@@ -170,12 +165,10 @@ BASE_CSS = """
   .muted{color:var(--muted)}
   .kpi{font-weight:800;line-height:1}
 
-  /* card 1 (Total) */
   .c1{background:var(--card1)}
   .c1::after{content:"";position:absolute;inset:0;background:var(--card1-spot);pointer-events:none}
   .kpi-blue{color:var(--kpi-blue)}
 
-  /* card 2 (Today) */
   .c2{background:var(--card2)}
   .c2::after{content:"";position:absolute;inset:0;background:var(--card2-spot);pointer-events:none}
   .kpi-green{color:var(--kpi-green)}
@@ -191,19 +184,102 @@ BASE_CSS = """
   .recent-h{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:var(--border) solid var(--divider)}
   .ip{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
 
-  /* toggle */
   .toggle{display:flex;align-items:center;gap:10px}
   .tbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:var(--border) solid var(--card-ring);background:transparent;color:var(--text);cursor:pointer}
+
+  /* Landing specific */
+  .hero-card{
+      max-width: 980px;margin: 48px auto;background: #ffffff10;
+      border-radius: var(--radius); border: var(--border) solid var(--card-ring);
+      box-shadow: var(--shadow); overflow:hidden; position:relative;
+      backdrop-filter: blur(12px);
+  }
+  .hero-card::after{
+      content:""; position:absolute; inset:0;
+      background: radial-gradient(700px 700px at 80% -10%, rgba(99,102,241,.20), transparent 60%),
+                  radial-gradient(700px 700px at -20% 120%, rgba(16,185,129,.18), transparent 60%);
+      pointer-events:none;
+  }
+  .hero-inner{ padding: 48px 28px; background: var(--bg); }
+  .logo-ring{ width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+              border:var(--border) solid var(--card-ring); background: #ffffff10; margin:0 auto 12px auto; }
+  .title{ text-align:center; font-weight:800; letter-spacing:.2px; margin: 6px 0 8px 0; }
+  .subtitle{ text-align:center; color:var(--muted); }
+  .cta-row{ display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
 </style>
 """
 
+# ---------- LANDING (Home "/") ----------
+LANDING_HTML = """
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{{ name }} | Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  {{ base_css|safe }}
+</head>
+<body>
+  <div class="container" style="max-width:1100px;">
+    <div class="hdr" style="margin-bottom:0">
+      <div class="brand">{{ name }}</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="toggle">
+          <button id="theme-dark" class="tbtn">🌙 Dark</button>
+          <button id="theme-light" class="tbtn">☀️ Light</button>
+        </div>
+        <nav class="nav">
+          <a class="pill" href="/count">Count</a>
+          <a class="pill" href="/analytics">Analytics</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-inner">
+        <div class="logo-ring">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style="color:#8b5cf6">
+            <path d="M12 3a9 9 0 1 0 9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="18" cy="6" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+        <h1 class="title" style="font-size:clamp(28px,5vw,42px);">Welcome to {{ name }}</h1>
+        <p class="subtitle">A modern, containerized visit tracker with analytics. Click below to see the live counter.</p>
+
+        <div class="cta-row">
+          <a href="/count" class="btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M13 11h6M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            View Visit Count
+          </a>
+          <a href="/analytics" class="tbtn">Analytics</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function setTheme(mode){
+      document.documentElement.setAttribute('data-theme', mode);
+      localStorage.setItem('sitescope_theme', mode);
+    }
+    (function(){ setTheme(localStorage.getItem('sitescope_theme') || 'dark'); })();
+    document.getElementById('theme-dark').addEventListener('click', ()=>setTheme('dark'));
+    document.getElementById('theme-light').addEventListener('click', ()=>setTheme('light'));
+  </script>
+</body>
+</html>
+"""
+
+# ---------- DASHBOARD (now at "/count") ----------
 DASHBOARD_HTML = """
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>{{ name }} | Dashboard</title>
+  <title>{{ name }} | Count</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   {{ base_css|safe }}
@@ -222,7 +298,7 @@ DASHBOARD_HTML = """
           <button id="theme-light" class="tbtn">☀️ Light</button>
         </div>
         <nav class="nav">
-          <a class="pill" href="/">Dashboard</a>
+          <a class="pill" href="/">Home</a>
           <a class="pill" href="/analytics">Analytics</a>
         </nav>
       </div>
@@ -282,20 +358,15 @@ DASHBOARD_HTML = """
   </div>
 
   <script>
-    // --- Theme toggle with persistence ---
-    const root = document.documentElement;
+    // Theme toggle
     function setTheme(mode){
       document.documentElement.setAttribute('data-theme', mode);
       localStorage.setItem('sitescope_theme', mode);
     }
-    (function initTheme(){
-      const saved = localStorage.getItem('sitescope_theme');
-      setTheme(saved || 'dark');
-    })();
+    (function(){ setTheme(localStorage.getItem('sitescope_theme') || 'dark'); })();
     document.getElementById('theme-dark').addEventListener('click', ()=>setTheme('dark'));
     document.getElementById('theme-light').addEventListener('click', ()=>setTheme('light'));
 
-    // --- Data helpers ---
     async function j(u, o){ const r = await fetch(u, o); return r.json(); }
     function fmtDate(s){
       try{ const d = new Date(s);
@@ -306,13 +377,11 @@ DASHBOARD_HTML = """
 
     async function loadState(){
       const st = await j('/api/state');
-      const list = await j('/api/visits?limit=200');
+      const list = await j('/api/visits?limit=999');
 
-      // totals
       const total = st.count || 0;
       document.getElementById('kpi-total').textContent = Intl.NumberFormat().format(total);
 
-      // today
       const todayStr = new Date().toDateString();
       const items = (list.items || []);
       const todayCount = items.filter(v => new Date(v.created_date).toDateString() === todayStr).length;
@@ -321,7 +390,6 @@ DASHBOARD_HTML = """
       const growth = total > 0 ? ((todayCount/total)*100).toFixed(1)+'% of total' : '0% of total';
       document.getElementById('kpi-growth').textContent = growth;
 
-      // recent list
       const container = document.getElementById('recent-list');
       container.innerHTML = '';
       if(items.length === 0){
@@ -352,14 +420,14 @@ DASHBOARD_HTML = """
       }
     }
 
-    // Increment button (AJAX) – server already increments on full page load
+    // Increment button (AJAX)
     const btn = document.getElementById('btn-visit');
     btn.addEventListener('click', async ()=>{
-      btn.disabled = true;
+      btn.disabled = True;
       try{
         await j('/api/incr', { method:'POST' });
         await loadState();
-      } finally { btn.disabled = false; }
+      } finally { btn.disabled = False; }
     });
 
     // Initial load (server already incremented on render)
@@ -370,6 +438,7 @@ DASHBOARD_HTML = """
 </html>
 """
 
+# ---------- ANALYTICS ----------
 ANALYTICS_HTML = """
 <!doctype html>
 <html lang="en" data-theme="dark">
@@ -391,7 +460,7 @@ ANALYTICS_HTML = """
           <button id="theme-dark" class="tbtn">🌙 Dark</button>
           <button id="theme-light" class="tbtn">☀️ Light</button>
         </div>
-        <a class="pill" href="/">← Back</a>
+        <a class="pill" href="/">← Home</a>
       </div>
     </div>
 
@@ -411,16 +480,12 @@ ANALYTICS_HTML = """
       document.documentElement.setAttribute('data-theme', mode);
       localStorage.setItem('sitescope_theme', mode);
     }
-    (function initTheme(){
-      const saved = localStorage.getItem('sitescope_theme');
-      setTheme(saved || 'dark');
-    })();
+    (function(){ setTheme(localStorage.getItem('sitescope_theme') || 'dark'); })();
     document.getElementById('theme-dark').addEventListener('click', ()=>setTheme('dark'));
     document.getElementById('theme-light').addEventListener('click', ()=>setTheme('light'));
 
     let dailyChart, hourlyChart;
     async function j(u){ const r = await fetch(u); return r.json(); }
-    function peakHour(arr){ if(!arr.length) return 'N/A'; let m=arr[0]; arr.forEach(x=>{if(x.visits>m.visits)m=x}); return m.hour || 'N/A'; }
 
     async function load(){
       const st = await j('/api/state');
@@ -464,18 +529,15 @@ ANALYTICS_HTML = """
 
 # --- Routes ---
 @app.route("/")
-def dashboard():
-    # increment on every page load/refresh
+def home():  # thumbnail landing; does NOT increment
+    return render_template_string(LANDING_HTML, name=APP_NAME, base_css=BASE_CSS)
+
+@app.route("/count")
+def count_page():  # full dashboard; increments on refresh
     ip = request.headers.get("X-Forwarded-For", request.remote_addr or "unknown")
     ua = request.headers.get("User-Agent", "unknown")
     count_after, _ = create_visit(ip, ua)
-
-    return render_template_string(
-        DASHBOARD_HTML,
-        name=APP_NAME,
-        base_css=BASE_CSS,
-        count=count_after,
-    )
+    return render_template_string(DASHBOARD_HTML, name=APP_NAME, base_css=BASE_CSS, count=count_after)
 
 @app.route("/analytics")
 def analytics():
